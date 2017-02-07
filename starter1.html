@@ -31,6 +31,16 @@
 </head>
 
 <body class="hold-transition skin-red layout-top-nav">
+<script src="plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+<!-- Bootstrap 3.3.6 -->
+
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<!-- AdminLTE App -->
+
+<script src="dist/js/app.min.js"></script>
+
 
 <div class="wrapper">
 
@@ -163,63 +173,198 @@
     <!-- Main content -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
+      
+      
+      $(document).ready(function(){ 
+          $("#nextBtn").prop("disabled",true); 
+          $("#prevBtn").prop("disabled",true);
+       });
+
       google.charts.load("current", {packages:["corechart"]});
       google.charts.load("current", {packages:["table"]});
-      //google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {        
-      var data = google.visualization.arrayToDataTable
+	  
+      var chart  = null;   
+      var index = 0;
+	    var curr = null;
+      var data = null, dataTable = null;  
+      var lives = 3;
+      var level=1;
+      var score=0;
+	 
+		function answer(){
+		var ans=[16,15,82,21,26,30];
+		return ans[index];
+		}	  
+      function drawChart() {
+    document.getElementById('life').innerHTML = lives; 
+    document.getElementById('level').innerHTML = level;  
+    document.getElementById('score').innerHTML = score;  
+	  var a=makeData();    
+	  var ans=answer();  
+      data = google.visualization.arrayToDataTable
             ([ ['X', 'Y'],
-              [1, 1],
-              [2, 1],
-              [3, 2],
-              [4, 3],
-              [5, 5],
-              [6, 8],
-              [7, 13],
-              [8, 21] ]);
+              a[0],
+              a[1],
+              a[2],
+              a[3],
+              a[4],
+              a[5],
+              a[6],
+              [8,ans]]);
 
         var options = {
           legend: 'none',
+			height: 216,
+			width: 668,
           hAxis: { minValue: 0, maxValue: 9 },
           colors: ['#795548'],
           pointSize: 20,
+		  animation:{ startup:true, duration: 1000, easing: 'linear'},
           pointShape: 'star',
           backgroundColor: { fill:'transparent' }
 
        };
-        var chart = new google.visualization.LineChart(document.getElementById('numberChart'));
+        chart = new google.visualization.LineChart(document.getElementById('numberChart'));
         chart.draw(data, options);
-        function selectHandler() {
-          var selectedItem = chart.getSelection()[0];
-          if (selectedItem) {
-            var topping = data.getValue(selectedItem.row, selectedItem.column);
-            //document.getElementById('fill').innerHTML=topping;
-            alert('The user selected ' + topping);
-          }
-        }
+        
         google.visualization.events.addListener(chart, 'select', selectHandler);    
         chart.draw(data, options);
-
-    var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('number', 'Name');
-        dataTable.addColumn('number', 'Number');
-        dataTable.addRows([
-          [1,   {v: 2,   f: '2'}],
-          [2,   {v: 4,   f: '4'}],
-          [3,   {v: 6,   f: '6'}],
-          [4,   {v: 8,   f: '8'}],
-          [5,   {v: 10,  f: '10'}],
-          [6,   {v: 12,  f: '12'}],
-          [7,   {v: 14,  f: '14'}],
-          [8,   {v: 16,  f: '16'}]
-        ]);
+        var temp=makeData();
+        console.log(temp);
+        drawTables(temp);
         
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-        table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
 }
- 
+      function makeData(){
+        var arr=[
+                 [ [1,   2],
+                   [2,   4],
+                   [3,   6],
+                   [4,   8],
+                   [5,   10],
+                   [6,   12],
+                   [7,   14],
+                   [8,   0]] ,
+              
+                 [ [1,   5],
+                   [2,   10],
+                   [3,   25],
+                   [4,   10],
+                   [5,   5],
+                   [6,   10],
+                   [7,   25],
+                   [8,    0] ],
+
+                 [ [1,   20],
+                   [2,   1],
+                   [3,   19],
+                   [4,   2],
+                   [5,   18],
+                   [6,   3],
+                   [7,   17],
+                   [8,   0] ],
+
+                 [ [1,   1],
+                   [2,   1],
+                   [3,   2],
+                   [4,   3],
+                   [5,   5],
+                   [6,   8],
+                   [7,   13],
+                   [8,   0] ],
+
+                 [ [1,   12],
+                   [2,   44],
+                   [3,   30],
+                   [4,   16],
+                   [5,   3],
+                   [6,   50],
+                   [7,   13],
+                   [8,   0] ],
+
+                 [ [1,   0],
+                   [2,   30],
+                   [3,   45],
+                   [4,   60],
+                   [5,   90],
+                   [6,   60],
+                   [7,   45],
+                   [8,   0] ]
+                ];
+
+                return arr[index];
+      }
+      function next(){
+        document.getElementById('prevBtn').disabled=false;
+         document.getElementById('nextBtn').disabled=true;
+        index=index+1;
+        level=level+1;
+        score=score+100;
+        drawChart();
+      	if(index==5){
+      		alert('Congratulations, you have finished the test!');
+      		index=0;
+          level=1;
+          lives=3;
+          score=0;
+          drawChart();
+      	}
+
+      }
+      function prev(){
+        document.getElementById('nextBtn').disabled=false;
+        index=index-1;
+        drawChart();
+        if(index == 0)
+          document.getElementById('prevBtn').disabled=true;
+      }
+      function drawTables(arr){
+              dataTable = new google.visualization.DataTable();
+              dataTable.addColumn('number', 'Name');
+              dataTable.addColumn('number', 'Number');
+              dataTable.addRows(arr);
+              var table = new google.visualization.Table(document.getElementById('table_div'));
+              table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
+      }
+      function selectHandler(abc, ads) {      
+          var selectedItem = chart.getSelection()[0];
+          if (selectedItem) {
+            var topping = data.getValue(selectedItem.row, selectedItem.column);
+      		  var ans=answer();
+      		  if(topping == ans){
+          		  var temp = makeData();
+          		  curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
+          		  drawTables(curr);
+          		  document.getElementById('nextBtn').disabled = false;
+                }
+            else{
+              lives=lives-1;
+              document.getElementById('life').innerHTML = lives;
+            }
+
+          if(lives == 0){
+              alert('Game Over');
+              index=0;
+              lives=3;
+              score=0;
+              drawChart();
+          }
+
+            }
+        } 
+
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 500);
+    });
+
+    //redraw graph when window resize is completed  
+    $(window).on('resizeEnd', function() {
+        drawChart();
+    });
     </script>
-    
+
 <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Data Visualization</h3>
@@ -237,8 +382,8 @@
                     <strong>Predict the Number</strong>
                   </p>
 
-                  <div class="box-body no-padding" id="numberChart"style="height: 216px; width: 668px;">
-                  <a class="btn btn-app" onClick="drawChart()">
+                  <div class="box-body no-padding" id="numberChart" style="height: 216px; width: 668px;s">
+                  <a class="btn btn-app" onClick="drawChart()" id="playBtn">
                 <i class="fa fa-play"></i> Play
               </a>
                   </div>
@@ -259,9 +404,9 @@
                 <div class="row">
                     <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-danger">Left</button>
-                      <button type="button" class="btn btn-danger">Middle</button>
-                      <button type="button" class="btn btn-danger">Right</button>
+                      <button type="button" class="btn btn-danger" onclick="prev()" id="prevBtn">Prev</button>
+                      <button type="button" class="btn btn-danger" id="saveBtn">New</button>
+                      <button type="button" class="btn btn-danger" onclick="next()" id="nextBtn">Next</button>
                     </div>
                   </td>
                 </div>
@@ -272,7 +417,7 @@
               <div class="row">
                 <div class="col-sm-3 col-xs-6">
                   <div class="box box-danger">
-                    <h5 class="description-header">200</h5>
+                    <h5 class="description-header" id="score"><b>0</b></h5>
                     <span class="description-text">SCORE</span>
                   </div>
                   <!-- /.description-block -->
@@ -280,7 +425,7 @@
                 <!-- /.col -->
                 <div class="col-sm-3 col-xs-6">
                   <div class="box box-danger">
-                    <h5 class="description-header">3</h5>
+                    <h5 class="description-header" id="life"><b>3</b></h5>
                     <span class="description-text">LIVES LEFT</span>
                   </div>
                   <!-- /.description-block -->
@@ -288,7 +433,7 @@
                 <!-- /.col -->
                 <div class="col-sm-3 col-xs-6">
                   <div class="box box-danger">
-                    <h5 class="description-header">2</h5>
+                    <h5 class="description-header" id="level"><b>0</b></h5>
                     <span class="description-text">LEVEL</span>
                   </div>
                   <!-- /.description-block -->
@@ -296,8 +441,8 @@
                 <!-- /.col -->
                 <div class="col-sm-3 col-xs-6">
                   <div class="box box-danger">
-                    <h5 class="description-header">1200</h5>
-                    <span class="description-text">GOAL COMPLETIONS</span>
+                    <h5 class="description-header"><b>Easy</b></h5>
+                    <span class="description-text">DIFFICULTY</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
@@ -323,15 +468,7 @@
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->
 <!-- jQuery 2.2.3 -->
-<script src="plugins/jQuery/jquery-2.2.3.min.js"></script>
 
-<!-- Bootstrap 3.3.6 -->
-
-<script src="bootstrap/js/bootstrap.min.js"></script>
-
-<!-- AdminLTE App -->
-
-<script src="dist/js/app.min.js"></script>
 
 
 </body>
