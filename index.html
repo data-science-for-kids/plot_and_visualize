@@ -167,19 +167,19 @@
 
       google.charts.load("current", {packages:["corechart"]});
       google.charts.load("current", {packages:["table"]});
-	  
+    
       var chart  = null;   
       var index = 0;
-	    var curr = null;
+      var curr = null;
       var data = null, dataTable = null;  
       var lives = 3;
       var level=1;
       var score=0;
-	 
-		function answer(){
-		var ans=[16,15,4,21,26,30];
-		return ans[index];
-		}	  
+   
+    function answer(){
+    var ans=[16,15,4,21,26,30];
+    return ans[index];
+    }   
     function setModal(){
       var str="";
       var arr = makeData();
@@ -207,8 +207,8 @@
       document.getElementById('life').innerHTML = lives; 
       document.getElementById('level').innerHTML = level;  
       document.getElementById('score').innerHTML = score;  
-  	  var a=makeData();    
-  	  var ans=answer();  
+      var a=makeData();    
+      var ans=answer();  
       data = google.visualization.arrayToDataTable
             ([ ['X', 'Y'],
               a[0],
@@ -222,12 +222,12 @@
 
         var options = {
           legend: 'none',
-    			height: 228,
-    			width: "100%",
+          height: 228,
+          width: "100%",
           hAxis: { minValue: 0, maxValue: 9 },
           colors: ['#795548'],
           pointSize: 20,
-		      animation:{ startup:true, duration: 1000, easing: 'linear'},
+          animation:{ startup:true, duration: 500, easing: 'linear'},
           pointShape: 'star',
           backgroundColor: { fill:'transparent' }
 
@@ -308,10 +308,10 @@
         level=level+1;
         score=score+100;
         setModal();
-      	if(index==5){
-      		alert('Congratulations, you have finished the test!');
-      		new_();
-      	}
+        if(index==5){
+          alert('Congratulations, you have finished the test!');
+          new_();
+        }
 
       }
       function new_(){
@@ -340,12 +340,12 @@
           var selectedItem = chart.getSelection()[0];
           if (selectedItem) {
             var topping = data.getValue(selectedItem.row, selectedItem.column);
-      		  var ans=answer();
-      		  if(topping == ans){
-          		  var temp = makeData();
-          		  curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
-          		  drawTables(curr);
-          		  document.getElementById('nextBtn').disabled = false;
+            var ans=answer();
+            if(topping == ans){
+                var temp = makeData();
+                curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
+                drawTables(curr);
+                document.getElementById('nextBtn').disabled = false;
                 }
             else{
               lives=lives-1;
@@ -359,10 +359,40 @@
 
             }
         } 
+        (function($,sr){
+            var debounce = function (func, threshold, execAsap) {
+            var timeout;
 
-    $(window).resize(function(){
-       drawChart();
-      });    </script>
+            return function debounced () {
+                var obj = this, args = arguments;
+                function delayed () {
+                    if (!execAsap)
+                        func.apply(obj, args);
+                    timeout = null;
+                };
+
+                if (timeout)
+                    clearTimeout(timeout);
+                else if (execAsap)
+                    func.apply(obj, args);
+
+                timeout = setTimeout(delayed, threshold || 100);
+            };
+          }
+            // smartresize 
+            jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
+        })(jQuery,'smartresize');
+
+
+      // usage:
+            $(window).smartresize(function(){
+              drawChart();
+            });
+
+    // $(window).resize(function(){
+    //    drawChart();
+    //   });    
+s</script>
 
 <div class="box">
             <div class="box-header with-border">
