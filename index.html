@@ -161,89 +161,128 @@
       
       
       $(document).ready(function(){ 
-          $("#nextBtn").prop("disabled",true); 
+          $("#nextBtn").prop("disabled",false); 
           $("#prevBtn").prop("disabled",true);
        });
 
       google.charts.load("current", {packages:["corechart"]});
       google.charts.load("current", {packages:["table"]});
     
-      var chart  = null;   
+      var chart  = null,chart1 = null,table = null;   
       var index = 0;
       var curr = null;
       var data = null, dataTable = null;  
       var lives = 3;
       var level=1;
       var score=0;
+      var chartArray=[['X','Y']];
    
-    function answer(){
-    var ans=[16,15,4,21,26,30];
-    return ans[index];
-    }   
-    function setModal(){
-      var str="";
-      var arr = makeData();
+      function answer(){
 
-      arr.forEach(function(val) {
-        if(val[1] != 0){
-          str=str+val[1]+" , ";
+      var ans = [16,15,4,21,26,30];
+      return ans[index];
+
+      }   
+
+      function setModal(){
+        var str="";
+        var arr = makeData();
+
+        arr.forEach(function(val) {
+          if(val[1] != 0){
+            str=str+val[1]+" , ";
+          }
+        });
+        
+        if(index > 0){
+        document.getElementById('modal_title').innerHTML = 'Great Job, Now complete this...';
         }
-      });
-      
-      if(index > 0){
-      document.getElementById('modal_title').innerHTML = 'Great Job, Now complete this...';
-      }
-      else{
-       document.getElementById('modal_title').innerHTML = 'Lets play a game! What Comes next in the series ?'; 
-      }
-      
-      document.getElementById('modal_body').innerHTML = str+" ?";
+        else{
+         document.getElementById('modal_title').innerHTML = 'Lets play a game! What Comes next in the series ?'; 
+        }
+        
+        document.getElementById('modal_body').innerHTML = str+" ?";
 
-      $("#myModal").modal("show");
+        $("#myModal").modal("show");
+        }
+
+        var data1,chart5,options1;
+      function emptyChart(){
+        document.getElementById('life').innerHTML = lives; 
+        document.getElementById('level').innerHTML = level;  
+        document.getElementById('score').innerHTML = score;
+        data1 = google.visualization.arrayToDataTable([
+                  ['X', 'Y'],
+                  ['', 0],]);
+        options1 = {
+             legend: 'none',
+             height: 228,
+             width: "100%",
+             hAxis: { minValue: 0, maxValue: 9 },
+             colors: ['#795548'],
+             pointSize: 20,
+             animation:{ startup:true, duration: 500, easing: 'linear'},
+             pointShape: 'star',
+             backgroundColor: { fill:'transparent' }};
+
+        chart5 = new google.visualization.ScatterChart(document.getElementById('Chart'));
+        chart5.draw(data1,options1);
+            var temp = makeData();
+            console.log(temp);
+            console.log(index);
+            drawTables(temp);
+        }
+
+      function addData(x,y) {
+        var ans = answer();
+        if(y == 0)
+          y = ans;
+        chartArray.push([x,y]);    
+        data1 = google.visualization.arrayToDataTable
+              (chartArray);
+        chart5.draw(data1,options1);;
       }
 
-    function drawChart() {
+      function drawChart() {
       //setModal();
-      document.getElementById('life').innerHTML = lives; 
-      document.getElementById('level').innerHTML = level;  
-      document.getElementById('score').innerHTML = score;  
-      var a=makeData();    
-      var ans=answer();  
-      data = google.visualization.arrayToDataTable
-            ([ ['X', 'Y'],
-              a[0],
-              a[1],
-              a[2],
-              a[3],
-              a[4],
-              a[5],
-              a[6],
-              [8,ans]]);
+        document.getElementById('life').innerHTML = lives; 
+        document.getElementById('level').innerHTML = level;  
+        document.getElementById('score').innerHTML = score;  
+        var a = makeData();    
+        var ans = answer();  
+        data = google.visualization.arrayToDataTable
+              ([ ['X', 'Y'],
+                a[0],
+                a[1],
+                a[2],
+                a[3],
+                a[4],
+                a[5],
+                a[6],
+                [8,ans]]);
 
-        var options = {
-          legend: 'none',
-          height: 228,
-          width: "100%",
-          hAxis: { minValue: 0, maxValue: 9 },
-          colors: ['#795548'],
-          pointSize: 20,
-          animation:{ startup:true, duration: 500, easing: 'linear'},
-          pointShape: 'star',
-          backgroundColor: { fill:'transparent' }
+          var options = {
+            legend: 'none',
+            height: 228,
+            width: "100%",
+            hAxis: { minValue: 0, maxValue: 9 },
+            colors: ['#795548'],
+            pointSize: 20,
+            animation:{ startup:true, duration: 500, easing: 'linear'},
+            pointShape: 'star',
+            backgroundColor: { fill:'transparent' }
 
-       };
-        chart = new google.visualization.LineChart(document.getElementById('Chart'));
-        chart.draw(data, options);
-        
-        google.visualization.events.addListener(chart, 'select', selectHandler);    
-       
-        var temp=makeData();
-        console.log(temp);
-        drawTables(temp);
-        
-}
+         };
+          chart = new google.visualization.LineChart(document.getElementById('Chart'));
+          chart.draw(data, options);
+          
+          google.visualization.events.addListener(chart, 'select', selectHandler);    
+         
+          
+  }
+    
       function makeData(){
-        var arr=[
+               var arr=[
                  [ [1,   2],
                    [2,   4],
                    [3,   6],
@@ -302,64 +341,78 @@
                 return arr[index];
       }
       function next(){
-          document.getElementById('prevBtn').disabled=false;
-         document.getElementById('nextBtn').disabled=true;
-        index=index+1;
-        level=level+1;
-        score=score+100;
-        setModal();
-        if(index==5){
-          alert('Congratulations, you have finished the test!');
-          new_();
-        }
+              document.getElementById('prevBtn').disabled=false;
+              document.getElementById('nextBtn').disabled=false;
+              index=index+1;
+              level=level+1;
+              score=score+100;
+              chartArray=[['X','Y']];
+              emptyChart();
+              //setModal();
+              if(index==5){
+                alert('Congratulations, you have finished the test!');
+                new_();
+              }
 
       }
       function new_(){
-          index=0;
-          level=1;
-          lives=3;
-          score=0;
-          setModal();
+              index=0;
+              level=1;
+              lives=3;
+              score=0;
+              chartArray=[['X','Y']];
+              setModal();
       }
       function prev(){
-        document.getElementById('nextBtn').disabled=false;
-        index=index-1;
-        setModal();
-        if(index == 0)
-          document.getElementById('prevBtn').disabled=true;
+              document.getElementById('nextBtn').disabled=false;
+              index=index-1;
+              setModal();
+              chartArray=[['X','Y']];
+              if(index == 0)
+                document.getElementById('prevBtn').disabled=true;
       }
       function drawTables(arr){
               dataTable = new google.visualization.DataTable();
-              dataTable.addColumn('number', 'Name');
+              dataTable.addColumn('number', '#');
               dataTable.addColumn('number', 'Number');
               dataTable.addRows(arr);
-              var table = new google.visualization.Table(document.getElementById('table_div'));
+              table = new google.visualization.Table(document.getElementById('table_div'));
+              google.visualization.events.addListener(table,'select',tableHandler);
               table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
       }
-      function selectHandler(abc, ads) {      
-          var selectedItem = chart.getSelection()[0];
-          if (selectedItem) {
-            var topping = data.getValue(selectedItem.row, selectedItem.column);
-            var ans=answer();
-            if(topping == ans){
-                var temp = makeData();
-                curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
-                drawTables(curr);
-                document.getElementById('nextBtn').disabled = false;
+      function tableHandler(e){
+              var selectedItem=table.getSelection()[0];
+              var temp=makeData();
+              if (selectedItem) {
+                  var topping = dataTable.getValue(selectedItem.row, 1);
+                  addData(selectedItem.row+1,topping);
                 }
-            else{
-              lives=lives-1;
-              document.getElementById('life').innerHTML = lives;
-            }
 
-          if(lives == 0){
-              alert('Game Over');
-              new_();
-          }
+      }
+      function selectHandler() {      
+              var selectedItem = chart.getSelection()[0];
+              if (selectedItem) {
+                var topping = data.getValue(selectedItem.row, selectedItem.column);
+                var ans=answer();
+                if(topping == ans){
+                    var temp = makeData();
+                    curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
+                    drawTables(curr);
+                    document.getElementById('nextBtn').disabled = false;
+                    }
+                else{
+                  lives=lives-1;
+                  document.getElementById('life').innerHTML = lives;
+                }
 
-            }
+              if(lives == 0){
+                  alert('Game Over');
+                  new_();
+              }
+
+                }
         } 
-        (function($,sr){
+      (function($,sr){
             var debounce = function (func, threshold, execAsap) {
             var timeout;
 
@@ -386,13 +439,13 @@
 
       // usage:
             $(window).smartresize(function(){
-              drawChart();
+              emptyChart();
             });
 
     // $(window).resize(function(){
     //    drawChart();
     //   });    
-s</script>
+</script>
 
 <div class="box">
             <div class="box-header with-border">
@@ -413,7 +466,7 @@ s</script>
                   <div class="col-md-10">
                   <div class="chart" id="Chart">
                     
-                  <a class="btn btn-app" onClick="setModal()" id="playBtn">
+                  <a class="btn btn-app" onClick="emptyChart()" id="playBtn">
                       <i class="fa fa-play"></i> Play
                   </a>
                   </div>
@@ -478,6 +531,7 @@ s</script>
                   <!-- /.description-block -->
                 </div>
               </div>
+              
               <!-- /.row -->
             </div>
             <!-- /.box-footer -->
