@@ -36,6 +36,9 @@
     display: table;
     margin: 0 auto;
 }
+#welcome,#chartHolder{
+  display: none;
+}
 </style>
 </head>
 
@@ -53,65 +56,14 @@
 
 <div class="wrapper">
 
-  <!-- Main Header -->
-
-  <header class="main-header">
-    <!-- Logo -->
-
-    <a href="#" class="logo">
-
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-
-      <span class="logo-mini"><b>Data</b>S</span>
-
-      <!-- logo for regular state and mobile devices -->
-
-      <span class="logo-lg"><b>Data Science for Kids</b></span>
-
-    </a>
-    <!-- Header Navbar -->
-
-    <nav class="navbar navbar-static-top" role="navigation">
-      <div class="navbar-custom-menu">
-
-        <ul class="nav navbar-nav">
-
-          <li class="dropdown notifications-menu">
-            <ul class="dropdown-menu">
-          </li>
-        </ul>
-
-          </li>
-          <li class="dropdown tasks-menu">
-          </li>
-          <li class="dropdown user user-menu">
-
-            <ul class="dropdown-menu">
-
-            </ul>
-
-          </li>
-
-        </ul>
-
-      </div>
-
-    </nav>
-
-  </header>
-
-  <!-- Left side column. contains the logo and sidebar -->
-  <!-- Content Wrapper. Contains page content -->
-
   <div class="content-wrapper">
 
     <section class="content-header">
 
-      <div class="box box-solid">
+        <div class="box box-solid" id="welcome">
             <div class="box-header with-border">
               <h3 class="box-title">Data Science for Kids</h3>
             </div>
-            <!-- /.box-header -->
             <div class="box-body">
               <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
@@ -122,7 +74,6 @@
                 <div class="carousel-inner">
                   <div class="item active">
                     <img src="slide1.png" alt="First slide">
-
                     <div class="carousel-caption">
                       Data Science
                     </div>
@@ -150,301 +101,11 @@
                 </a>
               </div>
             </div>
-            <!-- /.box-body -->
           </div>
-
-    </section>
-
-    <!-- Main content -->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      
-      
-      $(document).ready(function(){ 
-          $("#nextBtn").prop("disabled",false); 
-          $("#prevBtn").prop("disabled",true);
-       });
-
-      google.charts.load("current", {packages:["corechart"]});
-      google.charts.load("current", {packages:["table"]});
-    
-      var chart  = null,chart1 = null,table = null;   
-      var index = 0;
-      var curr = null;
-      var data = null, dataTable = null;  
-      var lives = 3;
-      var level=1;
-      var score=0;
-      var chartArray=[['X','Y']];
-      var x=0;
-   
-      function answer(){
-
-      var ans = [16,15,4,21,26,30];
-      return ans[index];
-
-      }   
-
-      function setModal(){
-        var str="";
-        var arr = makeData();
-
-        arr.forEach(function(val) {
-          if(val[1] != 0){
-            str=str+val[1]+" , ";
-          }
-        });
         
-        if(index > 0){
-        document.getElementById('modal_title').innerHTML = 'Great Job, Now complete this...';
-        }
-        else{
-         document.getElementById('modal_title').innerHTML = 'Lets play a game! What Comes next in the series ?'; 
-        }
-        
-        document.getElementById('modal_body').innerHTML = str+" ?";
-
-        $("#myModalHorizontal").modal("show");
-        }
-
-        var data1,chart5,options1;
-      function emptyChart(){
-        document.getElementById('life').innerHTML = lives; 
-        document.getElementById('level').innerHTML = level;  
-        document.getElementById('score').innerHTML = score;
-        x=document.getElementById('inputNo').value;
-        ans=answer();
-        
-        data1 = google.visualization.arrayToDataTable([
-                  ['X', 'Y'],
-                  ['', 0],]);
-        options1 = {
-             legend: 'none',
-             height: 228,
-             width: "100%",
-             hAxis: { minValue: 0, maxValue: 9 },
-             colors: ['#795548'],
-             pointSize: 20,
-             animation:{ startup:true, duration: 500, easing: 'linear'},
-             pointShape: 'star',
-             backgroundColor: { fill:'transparent' }};
-
-        chart5 = new google.visualization.ScatterChart(document.getElementById('Chart'));
-        chart5.draw(data1,options1);
-            var temp = makeData();
-            console.log(temp);
-            console.log(index);
-            drawTables(temp);
-        }
-
-      function addData(x,y) {
-        var ans = answer();
-        if(y == 0)
-          y = ans;
-        chartArray.push([x,y]);    
-        data1 = google.visualization.arrayToDataTable
-              (chartArray);
-        chart5.draw(data1,options1);;
-      }
-
-      function drawChart() {
-      //setModal();
-        document.getElementById('life').innerHTML = lives; 
-        document.getElementById('level').innerHTML = level;  
-        document.getElementById('score').innerHTML = score;  
-        var a = makeData();    
-        var ans = answer();  
-        data = google.visualization.arrayToDataTable
-              ([ ['X', 'Y'],
-                a[0],
-                a[1],
-                a[2],
-                a[3],
-                a[4],
-                a[5],
-                a[6],
-                [8,ans]]);
-
-          var options = {
-            legend: 'none',
-            height: 228,
-            width: "100%",
-            hAxis: { minValue: 0, maxValue: 9 },
-            colors: ['#795548'],
-            pointSize: 20,
-            animation:{ startup:true, duration: 500, easing: 'linear'},
-            pointShape: 'star',
-            backgroundColor: { fill:'transparent' }
-
-         };
-          chart = new google.visualization.LineChart(document.getElementById('Chart'));
-          chart.draw(data, options);
-          
-          google.visualization.events.addListener(chart, 'select', selectHandler);       
-      }
-    
-      function makeData(){
-               var arr=[
-                 [ [1,   2],
-                   [2,   4],
-                   [3,   6],
-                   [4,   8],
-                   [5,   10],
-                   [6,   12],
-                   [7,   14],
-                   [8,   0]] ,
-              
-                 [ [1,   5],
-                   [2,   10],
-                   [3,   25],
-                   [4,   10],
-                   [5,   5],
-                   [6,   10],
-                   [7,   25],
-                   [8,    0] ],
-
-                 [ [1,   20],
-                   [2,   1],
-                   [3,   19],
-                   [4,   2],
-                   [5,   18],
-                   [6,   3],
-                   [7,   17],
-                   [8,   0] ],
-
-                 [ [1,   1],
-                   [2,   1],
-                   [3,   2],
-                   [4,   3],
-                   [5,   5],
-                   [6,   8],
-                   [7,   13],
-                   [8,   0] ],
-
-                 [ [1,   12],
-                   [2,   44],
-                   [3,   30],
-                   [4,   16],
-                   [5,   3],
-                   [6,   50],
-                   [7,   13],
-                   [8,   0] ],
-
-                 [ [1,   0],
-                   [2,   30],
-                   [3,   45],
-                   [4,   60],
-                   [5,   90],
-                   [6,   60],
-                   [7,   45],
-                   [8,   0] ]
-                ];
-
-                return arr[index];
-      }
-      function next(){
-              document.getElementById('prevBtn').disabled=false;
-              document.getElementById('nextBtn').disabled=false;
-              index=index+1;
-              level=level+1;
-              score=score+100;
-              chartArray=[['X','Y']];
-              emptyChart();
-              setModal();
-              if(index==5){
-                alert('Congratulations, you have finished the test!');
-                new_();
-              }
 
 
-      }
-      function new_(){
-              index=0;
-              level=1;
-              lives=3;
-              score=0;
-              chartArray=[['X','Y']];
-              setModal();
-      }
-      function prev(){
-              document.getElementById('nextBtn').disabled=false;
-              index=index-1;
-              emptyChart();
-              chartArray=[['X','Y']];
-              if(index == 0)
-                document.getElementById('prevBtn').disabled=true;
-      }
-      function drawTables(arr){
-              dataTable = new google.visualization.DataTable();
-              dataTable.addColumn('number', '#');
-              dataTable.addColumn('number', 'Number');
-              dataTable.addRows(arr);
-              table = new google.visualization.Table(document.getElementById('table_div'));
-              google.visualization.events.addListener(table,'select',tableHandler);
-              table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
-      }
-      function tableHandler(e){
-              var selectedItem=table.getSelection()[0];
-              var temp=makeData();
-              if (selectedItem) {
-                  var topping = dataTable.getValue(selectedItem.row, 1);
-                  addData(selectedItem.row+1,topping);
-                }
-
-      }
-      function selectHandler() {      
-              var selectedItem = chart.getSelection()[0];
-              if (selectedItem) {
-                var topping = data.getValue(selectedItem.row, selectedItem.column);
-                var ans=answer();
-                if(topping == ans){
-                    var temp = makeData();
-                    curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,topping]];
-                    drawTables(curr);
-                    document.getElementById('nextBtn').disabled = false;
-                    }
-                else{
-                  lives=lives-1;
-                  document.getElementById('life').innerHTML = lives;
-                }
-
-              if(lives == 0){
-                  alert('Game Over');
-                  new_();
-              }
-
-                }
-        } 
-      (function($,sr){
-            var debounce = function (func, threshold, execAsap) {
-            var timeout;
-
-            return function debounced () {
-                var obj = this, args = arguments;
-                function delayed () {
-                    if (!execAsap)
-                        func.apply(obj, args);
-                    timeout = null;
-                };
-
-                if (timeout)
-                    clearTimeout(timeout);
-                else if (execAsap)
-                    func.apply(obj, args);
-
-                timeout = setTimeout(delayed, threshold || 100);
-            };
-          }
-            // smartresize 
-            jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
-        })(jQuery,'smartresize');
-
-            $(window).smartresize(function(){
-              emptyChart();
-            });    
-        </script>
-
-<div class="box">
+        <div class="box box-solid" id="chartHolder">
             <div class="box-header with-border">
               <h3 class="box-title">Data Visualization</h3>
 
@@ -453,7 +114,6 @@
                 </button>
               </div>
             </div>
-            <!-- /.box-header -->
             <div class="box-body" >
               <div class="row">
                 <div class="col-md-8">
@@ -463,7 +123,7 @@
                   <div class="col-md-10">
                   <div class="chart" id="Chart">
                     
-                  <a class="btn btn-app" onClick="emptyChart()" id="playBtn">
+                  <a class="btn btn-app" onClick="setModal()" id="playBtn">
                       <i class="fa fa-play"></i> Play
                   </a>
                   </div>
@@ -471,12 +131,10 @@
                   <!-- /.chart-responsive -->
                 </div>
                 <!-- /.col -->
-                <div class="col-md-2" id="table_div">
-                  
+                <div class="col-md-2" id="table_div"> 
                   <p class="text-center">
                     <strong>Goal Completion</strong>
                   </p>
-                  
                 </div>
                 <!-- /.col -->
               </div>
@@ -486,7 +144,7 @@
                     <td>
                     <div class="btn-group" id="innerBtn">
                       <button type="button" class="btn btn-danger" onclick="prev()" id="prevBtn">Prev</button>
-                      <button type="button" class="btn btn-danger" onclick="drawChart()" id="saveBtn">Plot</button>
+                      <button type="button" class="btn btn-danger" onclick="chartLine()" id="saveBtn">Plot</button>
                       <button type="button" class="btn btn-danger" onclick="next()" id="nextBtn">Next</button>
                     </div>
                   </td>
@@ -525,17 +183,304 @@
                     <h5 class="description-header"><b>Easy</b></h5>
                     <span class="description-text">DIFFICULTY</span>
                   </div>
-                  <!-- /.description-block -->
                 </div>
               </div>
-              
-              <!-- /.row -->
             </div>
-            <!-- /.box-footer -->
-<!-- Modal -->
+          </div>
+            
+    </section>
+</div>
+    <!-- Main content -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      
+      
+      $(document).ready(function(){ 
+          $("#nextBtn").prop("disabled",true); 
+          $("#prevBtn").prop("disabled",true);
+       });
+
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.load("current", {packages:["table"]});
+    
+      var chart  = null,chartS = null,table = null;   
+      var index = 0;
+      var curr = null;
+      var data = null, dataTable = null,dataS = null;  
+      var lives = 3;
+      var level=1;
+      var score=0;
+      var chartArray=[['X','Y']];
+      var x=0;
+   
+      function answer(){
+
+      var ans = [16, 40, 1, 25, 21, 15];
+      return ans[index];
+
+      }
+      function max_arr(){
+
+      var max_a = [18, 40, 8, 30, 21, 60];
+      return max_a[index];
+
+      }   
+
+      function setModal(){
+        var str="";
+        var arr = makeData();
+
+        arr.forEach(function(val) {
+          if(val[1] != 0){
+            str=str+val[1]+" , ";
+          }
+        });
+        
+        if(index > 0){
+        document.getElementById('modal_title').innerHTML = 'Great Job, Now complete this...';
+        console.log('set');
+        }
+        else{
+         document.getElementById('modal_title').innerHTML = 'Lets play a game! What Comes next in the series ?'; 
+        }
+        
+        document.getElementById('modal_body').innerHTML = str+" ?";
+
+        $("#myModalHorizontal").modal("show");
+
+        }
+
+       function checkanswer(){
+
+        x=document.getElementById('inputNo').value;
+        ans=answer();
+        if(ans == x){
+            console.log('Correct');
+           
+            chartLine();
+        }
+        else{
+              chartScatter();
+              return 0;
+        }
+      }
+      function getOptions(){
+            var a=makeData();
+            var top=max_arr();
+            dataS = google.visualization.arrayToDataTable([['X', 'Y'],['', 0]]);
+            options = {
+                 legend: 'none',
+                 height: 228,
+                 width: "100%",
+                 hAxis: {
+                          viewWindow: { min: 0, max: 9},
+                          ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        },
+                 vAxis: {
+                          viewWindow: { min: 0, max: top},
+                          ticks: [a[0][1],a[1][1],a[2][1],a[3][1],a[4][1],a[5][1],a[6][1]]
+                        },
+                 colors: ['#795548'],
+                 pointSize: 20,
+                 animation:{ startup:true, duration: 500, easing: 'linear'},
+                 pointShape: 'star',
+                 backgroundColor: { fill:'transparent' }};
+      }
+
+      function chartScatter(){
+        getOptions();
+        document.getElementById('life').innerHTML = lives; 
+        document.getElementById('level').innerHTML = level;  
+        document.getElementById('score').innerHTML = score;
+
+            chartS = new google.visualization.ScatterChart(document.getElementById('Chart'));
+            chartS.draw(dataS,options);
+            var temp = makeData();
+            drawTables(temp);
+            google.visualization.events.addListener(chartS, 'select', selectHandler); 
+        }
+
+      function addData(x,y) {
+            var ans = answer();
+            if(y == 0)
+              y = ans;
+            chartArray.push([x,y]);    
+            dataS = google.visualization.arrayToDataTable
+                  (chartArray);
+            chartS.draw(dataS,options);;
+      }
+
+      function chartLine() { 
+            getOptions();
+            var a = makeData();    
+            var ans = answer();  
+            data = google.visualization.arrayToDataTable([ ['X', 'Y'],a[0],a[1],a[2],a[3],a[4],a[5],a[6],[8,ans]]);
+
+              chart = new google.visualization.LineChart(document.getElementById('Chart'));
+              chart.draw(data, options);
+                var temp = makeData();
+                drawTables(temp);
+              google.visualization.events.addListener(chart, 'select', selectHandlerLine);
+      }
+  
+      function makeData(){
+               var arr=[
+                 [ [1, 2],[2, 4], [3, 6], [4, 8], [5, 10],[6, 12],[7, 14],[8, 0]] ,
+                 [ [1, 5],[2, 10],[3, 15],[4, 20],[5, 25],[6, 30],[7, 35],[8, 0] ],
+                 [ [1, 8],[2, 7], [3, 6], [4, 5], [5, 4], [6, 3], [7, 2], [8, 0] ],
+                 [ [1, 5],[2, 10],[3, 5], [4, 15],[5, 5], [6, 20],[7, 5], [8, 0] ],
+                 [ [1, 1],[2, 1], [3, 2], [4, 3], [5, 5], [6, 8], [7, 13],[8, 0] ],
+                 [ [1, 0],[2, 15],[3, 30],[4, 45],[5, 60],[6, 45],[7, 30],[8, 0] ]
+                ];
+
+                return arr[index];
+      }
+      function next(){
+
+              document.getElementById('prevBtn').disabled = false;
+              document.getElementById('nextBtn').disabled = true;
+              index=index+1;
+              level=level+1;
+              score=score+100;
+
+              chartArray=[['X','Y']];
+
+              console.log('Index = '+index);
+
+              if(index == 6){
+                alert('Congratulations, you have finished the test!');
+                new_();
+                return;
+              }
+              setModal();
+              
+      }
+      function new_(){
+              index=0;
+              level=1;
+              lives=3;
+              score=0;
+              chartArray=[['X','Y']];
+              checkanswer();
+              setModal();
+      }
+      function prev(){
+              document.getElementById('nextBtn').disabled=false;
+              index=index-1;
+              chartScatter();
+              chartArray=[['X','Y']];
+              if(index == 0)
+                document.getElementById('prevBtn').disabled=true;
+      }
+      function drawTables(arr){
+              dataTable = new google.visualization.DataTable();
+              dataTable.addColumn('number', '#');
+              dataTable.addColumn('number', 'Number');
+              dataTable.addRows(arr);
+              table = new google.visualization.Table(document.getElementById('table_div'));
+              google.visualization.events.addListener(table,'select',tableHandler);
+              table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
+      }
+      function tableHandler(e){
+              var selectedItem=table.getSelection()[0];
+              var temp=makeData();
+              if (selectedItem) {
+                  var topping = dataTable.getValue(selectedItem.row, 1);
+                  if(selectedItem.row == 7)
+                    topping=ans;
+                  addData(selectedItem.row+1,topping);
+
+                }
+      }
+      function selectHandler() {      
+              var selectedItem = chartS.getSelection()[0];
+              if (selectedItem) {
+                x = dataS.getValue(selectedItem.row, selectedItem.column);
+
+                if(x == ans){
+                    var temp = makeData();
+                    curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,x]];
+                    drawTables(curr);
+                    document.getElementById('nextBtn').disabled = false;
+                    }
+                else{
+                  lives=lives-1;
+                  document.getElementById('life').innerHTML = lives;
+                }
+
+              if(lives == 0){
+                  alert('Game Over');
+                  new_();
+              }
+
+                }
+        } 
+      function selectHandlerLine() {      
+
+              var selectedItem = chart.getSelection()[0];
+              if (selectedItem) {
+                x = data.getValue(selectedItem.row, selectedItem.column);
+                if(x == ans){
+                    var temp = makeData();
+                    curr = [temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6],[8,x]];
+                    drawTables(curr);
+                    document.getElementById('nextBtn').disabled = false;
+                    }
+                else{
+                    lives=lives-1;
+                    document.getElementById('life').innerHTML = lives;
+                  }
+
+                if(lives == 0){
+                    alert('Game Over');
+                    new_();
+                }
+            } 
+    }
+    function test(){
+       $('#welcome').show(); //class selector for the div to show
+      $('#chartHolder').hide()
+    }
+
+    function test1(){
+       $('#welcome').hide(); //class selector for the div to show
+      $('#chartHolder').show()
+    }
+
+          
+      (function($,sr){
+            var debounce = function (func, threshold, execAsap) {
+            var timeout;
+
+            return function debounced () {
+                var obj = this, args = arguments;
+                function delayed () {
+                    if (!execAsap)
+                        func.apply(obj, args);
+                    timeout = null;
+                };
+
+                if (timeout)
+                    clearTimeout(timeout);
+                else if (execAsap)
+                    func.apply(obj, args);
+
+                timeout = setTimeout(delayed, threshold || 100);
+            };
+          }
+            // smartresize 
+            jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
+          })(jQuery,'smartresize');
+
+            $(window).smartresize(function(){
+              chartScatter();
+            });    
+        </script>
+             
+          
 
           <div class="modal modal-danger" id="myModalHorizontal" tabindex="-1" role="dialog" 
-               aria-labelledby="myModalLabel" aria-hidden="true">
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                   <div class="modal-content">
                       <!-- Modal Header -->
@@ -549,7 +494,6 @@
                               Lets play a game! What Comes next in the series ?
                           </h4>
                       </div>
-                      
                       <!-- Modal Body -->
                       <div class="modal-body">
                           
@@ -567,32 +511,17 @@
                       
                       <!-- Modal Footer -->
                       <div class="modal-footer">
-                          <button type="button" class="btn btn-outline" data-dismiss="modal" onclick="emptyChart()">Visualize</button>
+                          <button type="button" class="btn btn-outline" 
+                          data-dismiss="modal" onclick="checkanswer()">Visualize</button>
                       </div>
                   </div>
-              </div>
+              </div> 
           </div>
+        </div>
       </div>
-    </div>
-  </div>
-  
-
-  <footer class="main-footer">
-
-    <strong><a href="#">Aspiring Minds Assessment Pvt. Ltd.</a></strong>
-
-  </footer>
-
-  
+  <button type="button" onclick="test()">welcome</button>
+    <button type="button" onclick="test1()">chart</button> 
   <div class="control-sidebar-bg"></div>
-
 </div>
-<!-- ./wrapper -->
-<!-- REQUIRED JS SCRIPTS -->
-<!-- jQuery 2.2.3 -->
-
-
-
 </body>
-
 </html>
