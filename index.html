@@ -280,13 +280,13 @@ However, delay the fade out process for 2.5 seconds */
                   console.log('Correct');
                   var snack = document.getElementById("snackbar")
                   snack.className = "show";
-                  setTimeout(function(){ snack.className = snack.className.replace("show", ""); chartLine();}, 3000);
+                  setTimeout(function(){ snack.className = snack.className.replace("show", ""); chartLine();}, 2000);
               }
               else{
-                    chartScatter();
+                    console.log('Incorrect');
                     var snack = document.getElementById("snackbar_incorrect")
                     snack.className = "show";
-                    setTimeout(function(){ snack.className = snack.className.replace("show", "");}, 3000);
+                    setTimeout(function(){ snack.className = snack.className.replace("show", "");chartScatter();},2000);
               }
       }
       function getOptions(){
@@ -335,6 +335,7 @@ However, delay the fade out process for 2.5 seconds */
       }
 
       function chartLine() { 
+              
               getOptions();
               var a = makeData();    
               var ans = answer();  
@@ -361,10 +362,7 @@ However, delay the fade out process for 2.5 seconds */
       }
       function next(){
               flag=true;
-              var snack = document.getElementById("snackbar")
-              snack.className = "show";
-              setTimeout(function(){ snack.className = snack.className.replace("show", ""); setModal();  }, 3000);
-
+              
               document.getElementById('prevBtn').disabled = false;
               document.getElementById('nextBtn').disabled = true;
               index=index+1;
@@ -379,7 +377,8 @@ However, delay the fade out process for 2.5 seconds */
                 alert('Congratulations, you have finished the test!');
                 new_();
                 return;
-              }              
+              }    
+              setModal();          
       }
       function new_(){
               index=0;
@@ -387,7 +386,7 @@ However, delay the fade out process for 2.5 seconds */
               lives=3;
               score=0;
               chartArray=[['X','Y']];
-              checkanswer();
+              
               setModal();
       }
       function prev(){
@@ -400,7 +399,7 @@ However, delay the fade out process for 2.5 seconds */
       }
       function drawTables(arr){
               var table_arr=[];
-
+              
               arr.forEach(function(e) {
               table_arr.push([e[0],e[1].toString(),flag]);
               });
@@ -435,6 +434,11 @@ However, delay the fade out process for 2.5 seconds */
                   if(document.getElementById('table_ans').value == ans){
                     document.getElementById('nextBtn').disabled = false;
                     topping=ans; 
+                  }
+                  else{
+                    var snack = document.getElementById("snackbar_incorrect")
+                    snack.className = "show";
+                    setTimeout(function(){ snack.className = snack.className.replace("show", "");},2000);
                   }
                 }
                 addData(selectedItem.row+1,parseInt(topping));
