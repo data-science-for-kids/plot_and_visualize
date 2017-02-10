@@ -39,6 +39,52 @@
 #welcome,#chartHolder{
   display: none;
 }
+
+#snackbar,#snackbar_incorrect {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show,#snackbar_incorrect.show {
+    visibility: visible; /* Show the snackbar */
+
+/* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
 </style>
 </head>
 
@@ -207,12 +253,12 @@
       var index = 0;
       var curr = null;
       var data = null, dataTable = null,dataS = null;  
-      var lives = 3;
+      var lives = 7;
       var level=1;
       var score=0;
       var chartArray=[['X','Y']];
       var x=0;
-   
+      var flag = true; 
       function answer(){
 
       var ans = [16, 40, 1, 25, 21, 15];
@@ -256,12 +302,13 @@
         ans=answer();
         if(ans == x){
             console.log('Correct');
-           
             chartLine();
         }
         else{
               chartScatter();
-              return 0;
+              var snack = document.getElementById("snackbar_incorrect")
+              snack.className = "show";
+              setTimeout(function(){ snack.className = snack.className.replace("show", "");}, 3000);
         }
       }
       function getOptions(){
@@ -315,12 +362,12 @@
             var a = makeData();    
             var ans = answer();  
             data = google.visualization.arrayToDataTable([ ['X', 'Y'],a[0],a[1],a[2],a[3],a[4],a[5],a[6],[8,ans]]);
-
               chart = new google.visualization.LineChart(document.getElementById('Chart'));
               chart.draw(data, options);
                 var temp = makeData();
                 drawTables(temp);
               google.visualization.events.addListener(chart, 'select', selectHandlerLine);
+            document.getElementById('nextBtn').disabled=false;
       }
   
       function makeData(){
@@ -336,6 +383,10 @@
                 return arr[index];
       }
       function next(){
+              flag=true;
+              var snack = document.getElementById("snackbar")
+              snack.className = "show";
+              setTimeout(function(){ snack.className = snack.className.replace("show", ""); setModal();  }, 3000);
 
               document.getElementById('prevBtn').disabled = false;
               document.getElementById('nextBtn').disabled = true;
@@ -352,7 +403,7 @@
                 new_();
                 return;
               }
-              setModal();
+
               
       }
       function new_(){
@@ -373,24 +424,46 @@
                 document.getElementById('prevBtn').disabled=true;
       }
       function drawTables(arr){
+              var table_arr=[];
+
+              arr.forEach(function(e) {
+              table_arr.push([e[0],e[1].toString(),flag]);
+              });
+
               dataTable = new google.visualization.DataTable();
               dataTable.addColumn('number', '#');
-              dataTable.addColumn('number', 'Number');
-              dataTable.addRows(arr);
+              dataTable.addColumn('string', 'Number');
+              dataTable.addColumn('boolean', 'Select');
+              dataTable.addRows(table_arr);
+
+              dataTable.setCell(7,1,'<input type="number" class="form-control" id="table_ans" placeholder="Answer"/>');
+
               table = new google.visualization.Table(document.getElementById('table_div'));
               google.visualization.events.addListener(table,'select',tableHandler);
-              table.draw(dataTable, {showRowNumber: false, width: '100%', height: '100%'});
+
+              var formatter = new google.visualization.ColorFormat();
+
+              formatter.addGradientRange(0, max_arr(), 'black', '#32ff4a','#ff3232');
+              formatter.format(dataTable, 0);
+              formatter.format(dataTable, 1);
+              formatter.format(dataTable, 2);
+
+              table.draw(dataTable, {allowHtml: true,showRowNumber: false, width: '100%', height: '100%'});
       }
       function tableHandler(e){
+
               var selectedItem=table.getSelection()[0];
               var temp=makeData();
               if (selectedItem) {
-                  var topping = dataTable.getValue(selectedItem.row, 1);
-                  if(selectedItem.row == 7)
-                    topping=ans;
-                  addData(selectedItem.row+1,topping);
-
+                var topping = dataTable.getValue(selectedItem.row, 1);     
+                if(selectedItem.row == 7){
+                  if(document.getElementById('table_ans').value == ans){
+                    document.getElementById('nextBtn').disabled = false;
+                    topping=ans; 
+                  }
                 }
+                addData(selectedItem.row+1,parseInt(topping));
+              }
       }
       function selectHandler() {      
               var selectedItem = chartS.getSelection()[0];
@@ -473,11 +546,12 @@
           })(jQuery,'smartresize');
 
             $(window).smartresize(function(){
-              chartScatter();
+              //chartScatter();
             });    
         </script>
              
-          
+          <div id="snackbar">Correct Answer..</div>
+          <div id="snackbar_incorrect">Sorry! Wrong answer</div>
 
           <div class="modal modal-danger" id="myModalHorizontal" tabindex="-1" role="dialog" 
                                     aria-labelledby="myModalLabel" aria-hidden="true">
@@ -485,11 +559,7 @@
                   <div class="modal-content">
                       <!-- Modal Header -->
                       <div class="modal-header">
-                          <button type="button" class="close" 
-                             data-dismiss="modal">
-                                 <span aria-hidden="true">&times;</span>
-                                 <span class="sr-only">Close</span>
-                          </button>
+                          
                           <h4 class="modal-title" id="modal_title">
                               Lets play a game! What Comes next in the series ?
                           </h4>
